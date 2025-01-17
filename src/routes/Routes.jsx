@@ -12,6 +12,7 @@ import MainLayout from '../layouts/MainLayout'
 import ManageOrders from '../pages/Dashboard/Seller/ManageOrders'
 import BookParcel from '@/pages/Dashboard/Client/BookParcel'
 import MyParcel from '@/pages/Dashboard/Client/MyParcel'
+import UpdateParcel from '@/pages/Dashboard/Client/UpdateParcel'
 
 export const router = createBrowserRouter([
   {
@@ -39,7 +40,7 @@ export const router = createBrowserRouter([
       {
         path: 'book-parcel',
         element: (
-          <PrivateRoute userRole={"user"}>
+          <PrivateRoute>
             <BookParcel/>
           </PrivateRoute>
         ),
@@ -49,6 +50,14 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <MyParcel/>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'update-parcel/:id',
+        element: (
+          <PrivateRoute>
+            <UpdateParcel/>
           </PrivateRoute>
         ),
       },
