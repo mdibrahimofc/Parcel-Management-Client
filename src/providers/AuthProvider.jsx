@@ -56,7 +56,7 @@ const AuthProvider = ({ children }) => {
       if (currentUser?.email) {
         setUser(currentUser)
 
-        const userData = {name:currentUser?.displayName, email: currentUser?.email, image: currentUser?.photoURL, role: "user"}
+        const userData = {name:currentUser?.displayName, email: currentUser?.email, image: currentUser?.photoURL, role: "User"}
         await axios.post(`${import.meta.env.VITE_API_URL}/user`, userData)
 
         // Get JWT token
