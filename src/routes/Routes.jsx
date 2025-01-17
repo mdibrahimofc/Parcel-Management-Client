@@ -10,6 +10,7 @@ import MainLayout from '../layouts/MainLayout'
 import BookParcel from '@/pages/Dashboard/Client/BookParcel'
 import MyParcel from '@/pages/Dashboard/Client/MyParcel'
 import UpdateParcel from '@/pages/Dashboard/Client/UpdateParcel'
+import AllParcels from '@/pages/Dashboard/Admin/AllParcels'
 
 export const router = createBrowserRouter([
   {
@@ -35,7 +36,6 @@ export const router = createBrowserRouter([
     children: [
       // client route
       {
-        index: true,
         path: 'book-parcel',
         element: (
           <PrivateRoute>
@@ -60,6 +60,14 @@ export const router = createBrowserRouter([
         ),
       },
       // admin route
+      {
+        path: 'all-parcels',
+        element: (
+          <PrivateRoute>
+            <AllParcels/>
+          </PrivateRoute>
+        ),
+      },
       {
         path: 'profile',
         element: (
