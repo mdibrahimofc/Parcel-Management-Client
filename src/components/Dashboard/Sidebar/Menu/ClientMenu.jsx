@@ -1,5 +1,4 @@
 import { FaBox } from "react-icons/fa";
-import { MdOutlineManageHistory } from 'react-icons/md'
 import { BsFillGiftFill } from "react-icons/bs";
 import MenuItem from './MenuItem'
 const ClientMenu = () => {
@@ -11,11 +10,6 @@ const ClientMenu = () => {
         address='book-parcel'
       />
       <MenuItem icon={BsFillGiftFill} label='My Parcel' address='my-parcel' />
-      <MenuItem
-        icon={MdOutlineManageHistory}
-        label='Manage Orders'
-        address='manage-orders'
-      />
     </>
   )
 }

@@ -18,6 +18,7 @@ const Sidebar = () => {
   const { logOut } = useAuth()
   const [isActive, setActive] = useState(false)
   const userRole = useUserRole()
+  console.log(userRole);
 
   // Sidebar Responsive Handler
   const handleToggle = () => {
@@ -69,14 +70,15 @@ const Sidebar = () => {
           <div className="flex flex-col justify-between flex-1 mt-6">
             <nav>
               {/* Menu Items */}
-              <CustomerMenu />
-              <ClientMenu />
-              <MenuItem
-                icon={BsGraphUp}
-                label="Statistics"
-                address="/dashboard"
-              />
-              <AdminMenu />
+              {
+                userRole === "Delivery Man" ? <CustomerMenu /> : <></>
+              }
+              {
+                userRole === "User" ? <ClientMenu /> : <></>
+              }
+              {
+                userRole === "Admin" ? <AdminMenu /> : <></>
+              }
             </nav>
           </div>
         </div>

@@ -5,11 +5,8 @@ import Login from '../pages/Login/Login'
 import SignUp from '../pages/SignUp/SignUp'
 import PrivateRoute from './PrivateRoute'
 import DashboardLayout from '../layouts/DashboardLayout'
-import ManageUsers from '../pages/Dashboard/Admin/ManageUsers'
 import Profile from '../pages/Dashboard/Common/Profile'
-import Statistics from '../pages/Dashboard/Common/Statistics'
 import MainLayout from '../layouts/MainLayout'
-import ManageOrders from '../pages/Dashboard/Seller/ManageOrders'
 import BookParcel from '@/pages/Dashboard/Client/BookParcel'
 import MyParcel from '@/pages/Dashboard/Client/MyParcel'
 import UpdateParcel from '@/pages/Dashboard/Client/UpdateParcel'
@@ -38,6 +35,7 @@ export const router = createBrowserRouter([
     children: [
       // client route
       {
+        index: true,
         path: 'book-parcel',
         element: (
           <PrivateRoute>
@@ -63,32 +61,12 @@ export const router = createBrowserRouter([
       },
       // admin route
       {
-        index: true,
-        element: (
-          <PrivateRoute>
-            <Statistics />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: 'manage-users',
-        element: (
-          <PrivateRoute>
-            <ManageUsers />
-          </PrivateRoute>
-        ),
-      },
-      {
         path: 'profile',
         element: (
           <PrivateRoute>
             <Profile />
           </PrivateRoute>
         ),
-      },
-      {
-        path: 'manage-orders',
-        element: <ManageOrders />,
       },
     ],
   },
