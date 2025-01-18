@@ -33,12 +33,21 @@ const BookParcel = () => {
         parcel.weight = +parcel.weight
         parcel.name = user?.displayName
         parcel.email = user?.email
+        parcel.bookingDate = new Date()
+        console.log(parcel);
         if(parcel.weight === 0){
           toast.error("Weight can not be 0")
           return
         }
-        const {data} = await axiosSecure.post("/parcel", parcel)
-        console.log(data);
+        try{
+          const {data} = await axiosSecure.post("/parcel", parcel)
+        if(data.insertedId){
+          toast.success("Your parcel booked successfully")
+        } 
+        }
+        catch(err){
+          toast.error( `something happened wrong, parcel not booked ${err}`)
+        }
     }
   return (
     <section className="bg-gradient-to-r from-blue-100 to-teal-200 py-16 px-6">

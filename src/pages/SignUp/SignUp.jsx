@@ -1,7 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import useAuth from "../../hooks/useAuth";
-import { toast } from "react-hot-toast";
 import { TbFidgetSpinner } from "react-icons/tb";
 import {
   Select,
@@ -10,14 +8,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import useAuth from "../../hooks/useAuth";
+import { toast } from "react-hot-toast";
 import useUpload from "@/hooks/useUpload";
 import axios from "axios";
 
 const SignUp = () => {
-  const { createUser, user, updateUserProfile, signInWithGoogle, loading } =
+  const { createUser, updateUserProfile, signInWithGoogle, loading } =
     useAuth();
   const navigate = useNavigate();
-  // form submit handler
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
@@ -26,23 +26,18 @@ const SignUp = () => {
     const password = form.password.value;
     const role = form.role.value;
     const imageFile = form.image.files[0];
-    const image = await useUpload(imageFile)
+    const image = await useUpload(imageFile);
 
-    const userData = {name, email, image, role}
-    console.log(userData);
+    const userData = { name, email, image, role };
+    if(!role || !image || !name || !email){
+      toast.error("All field must be fill up!")
+      return
+    }
 
     try {
-      //2. User Registration
-      const result = await createUser(email, password);
-
-      //3. Save username & profile photo
-      await updateUserProfile(
-        name,
-        image
-      );
-      console.log(result, import.meta.env.VITE_API_URL);
-
-      await axios.post(`${import.meta.env.VITE_API_URL}/user`, userData)
+      await axios.post(`${import.meta.env.VITE_API_URL}/user`, userData);
+      await createUser(email, password);
+      await updateUserProfile(name, image);
       navigate("/");
       toast.success("Signup Successful");
     } catch (err) {
@@ -51,12 +46,9 @@ const SignUp = () => {
     }
   };
 
-  // Handle Google Signin
   const handleGoogleSignIn = async () => {
     try {
-      //User Registration using google
       await signInWithGoogle();
-
       navigate("/");
       toast.success("Signup Successful");
     } catch (err) {
@@ -64,127 +56,115 @@ const SignUp = () => {
       toast.error(err?.message);
     }
   };
+
   return (
-    <div className="flex justify-center items-center min-h-screen bg-white">
-      <div className="flex flex-col max-w-md p-6 rounded-md sm:p-10 bg-gray-100 text-gray-900">
-        <div className="mb-8 text-center">
-          <h1 className="my-3 text-4xl font-bold">Sign Up</h1>
-          <p className="text-sm text-gray-400">Welcome to PlantNet</p>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 bg-white shadow-lg rounded-lg overflow-hidden">
+        {/* Left Side */}
+        <div className="hidden md:flex flex-col justify-center items-center bg-gradient-to-br from-blue-500 to-indigo-500 text-white p-8">
+          <h2 className="text-4xl font-bold">Welcome Back!</h2>
+          <p className="mt-4 text-lg">Sign up to join our amazing community and explore endless possibilities.</p>
+          <img
+            src="https://i.ibb.co.com/g7Qg9Xj/online-4208112-1920.jpg"
+            alt="Illustration"
+            className="mt-8"
+          />
         </div>
-        <form
-          onSubmit={handleSubmit}
-          noValidate=""
-          action=""
-          className="space-y-6 ng-untouched ng-pristine ng-valid"
-        >
-          <div className="space-y-4">
+
+        {/* Right Side */}
+        <div className="p-8 space-y-6">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gray-800">Create an Account</h1>
+            <p className="text-gray-500">Sign up to get started</p>
+          </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block mb-2 text-sm">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-600">
                 Name
               </label>
               <input
                 type="text"
                 name="name"
                 id="name"
-                placeholder="Enter Your Name Here"
-                className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-lime-500 bg-gray-200 text-gray-900"
-                data-temp-mail-org="0"
+                placeholder="Enter your name"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
             <div>
-              <label htmlFor="image" className="block mb-2 text-sm">
-                Select Image:
+              <label htmlFor="image" className="block text-sm font-medium text-gray-600">
+                Profile Picture
               </label>
               <input
-                required
                 type="file"
-                id="image"
                 name="image"
+                id="image"
                 accept="image/*"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               />
             </div>
             <div>
+              <label htmlFor="role" className="block text-sm font-medium text-gray-600">
+                Role
+              </label>
               <Select name="role">
-                <SelectTrigger className="w-[180px] bg-gray-200">
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select your role" />
                 </SelectTrigger>
-                <SelectContent  className="bg-gray-200">
+                <SelectContent>
                   <SelectItem value="User">User</SelectItem>
                   <SelectItem value="Delivery Man">Delivery Man</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <label htmlFor="email" className="block mb-2 text-sm">
-                Email address
+              <label htmlFor="email" className="block text-sm font-medium text-gray-600">
+                Email Address
               </label>
               <input
                 type="email"
                 name="email"
                 id="email"
-                required
-                placeholder="Enter Your Email Here"
-                className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-lime-500 bg-gray-200 text-gray-900"
-                data-temp-mail-org="0"
+                placeholder="Enter your email"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
             <div>
-              <div className="flex justify-between">
-                <label htmlFor="password" className="text-sm mb-2">
-                  Password
-                </label>
-              </div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-600">
+                Password
+              </label>
               <input
                 type="password"
                 name="password"
-                autoComplete="new-password"
                 id="password"
-                required
-                placeholder="*******"
-                className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-lime-500 bg-gray-200 text-gray-900"
+                placeholder="********"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
-          </div>
-
-          <div>
             <button
               type="submit"
-              className="bg-lime-500 w-full rounded-md py-3 text-white"
+              className="w-full bg-indigo-500 text-white py-2 rounded-lg font-semibold hover:bg-indigo-600 focus:ring-4 focus:ring-indigo-300"
               disabled={loading}
             >
-              {loading ? (
-                <TbFidgetSpinner className="animate-spin m-auto" />
-              ) : (
-                "Continue"
-              )}
+              {loading ? <TbFidgetSpinner className="animate-spin mx-auto" size={20} /> : "Sign Up"}
             </button>
+          </form>
+          <div className="text-center mt-4">
+            <p className="text-sm text-gray-500">Or sign up with</p>
           </div>
-        </form>
-        <div className="flex items-center pt-4 space-x-1">
-          <div className="flex-1 h-px sm:w-16 dark:bg-gray-700"></div>
-          <p className="px-3 text-sm dark:text-gray-400">
-            Signup with social accounts
-          </p>
-          <div className="flex-1 h-px sm:w-16 dark:bg-gray-700"></div>
-        </div>
-        <div
-          onClick={handleGoogleSignIn}
-          className="flex justify-center items-center space-x-2 border m-3 p-2 border-gray-300 border-rounded cursor-pointer"
-        >
-          <FcGoogle size={32} />
-
-          <p>Continue with Google</p>
-        </div>
-        <p className="px-6 text-sm text-center text-gray-400">
-          Already have an account?{" "}
-          <Link
-            to="/login"
-            className="hover:underline hover:text-lime-500 text-gray-600"
+          <div
+            onClick={handleGoogleSignIn}
+            className="flex items-center justify-center p-3 border border-gray-300 rounded-lg shadow-md cursor-pointer hover:bg-gray-100"
           >
-            Login
-          </Link>
-          .
-        </p>
+            <FcGoogle size={24} />
+            <span className="ml-2">Continue with Google</span>
+          </div>
+          <p className="mt-4 text-sm text-center text-gray-600">
+            Already have an account?{' '}
+            <Link to="/login" className="text-indigo-500 hover:underline">
+              Login
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

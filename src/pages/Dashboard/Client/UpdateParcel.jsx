@@ -1,12 +1,39 @@
 import useAuth from '@/hooks/useAuth';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
-import { useState } from 'react';
+import { number } from 'prop-types';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { useParams } from 'react-router-dom';
 
 const UpdateParcel = () => {
     const {user} = useAuth()
     const axiosSecure = useAxiosSecure()
     const [prices, setPrices] = useState(0)
+    const [parcels, setParcels] = useState({})
+
+      const {id} = useParams()
+      console.log(id);
+      const loadParcel = async () => {
+        const {data} = await axiosSecure(`/parcel/${id}`)
+        setParcels(data)
+        console.log(data);
+      }
+      useEffect(()=> {
+        loadParcel()
+      },[])
+      const { number,
+        parcelType,
+        weight,
+        receiverName,
+        receiverPhone,
+        address,
+        deliveryDate,
+        latitude,
+        longitude,
+        price,
+        name,
+        email} = parcels
+        console.log(parcels);
 
     const handleWeight = e => {
       const weight = +e.target.value
@@ -25,20 +52,28 @@ const UpdateParcel = () => {
       }
     }
 
-    const handleBookPercel = async e => {
-        e.preventDefault()
-        const form = new FormData(e.target)
-        const parcel = Object.fromEntries(form.entries())
-        parcel.price = +parcel.price
-        parcel.weight = +parcel.weight
-        parcel.name = user?.displayName
-        parcel.email = user?.email
-        if(parcel.weight === 0){
-          toast.error("Weight can not be 0")
-          return
-        }
+    const handleUpdatePercel = async e => {
+      e.preventDefault()
+      const form = new FormData(e.target)
+      const parcel = Object.fromEntries(form.entries())
+      parcel.price = +parcel.price
+      parcel.weight = +parcel.weight
+      parcel.name = user?.displayName
+      parcel.email = user?.email
+      parcel.bookingDate = new Date()
+      if(parcel.weight === 0){
+        toast.error("Weight can not be 0")
+        return
+      }
+      try{
         const {data} = await axiosSecure.post("/parcel", parcel)
-        console.log(data);
+      if(data.insertedId){
+        toast.success("Your parcel booked successfully")
+      } 
+      }
+      catch(err){
+        toast.error( `something happened wrong, parcel not booked ${err}`)
+      }
     }
   return (
     <section className="bg-gradient-to-r from-blue-100 to-teal-200 py-16 px-6">
@@ -46,7 +81,7 @@ const UpdateParcel = () => {
         <h2 className="text-4xl font-semibold text-center text-blue-800 mb-4">Update Your Parcel Details</h2>
         <p className="text-center text-lg text-gray-600 mb-8">Modify your parcel information with ease. Please note that updates are only allowed for parcels with a "Pending" status.</p>
 
-        <form onSubmit={handleBookPercel} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form onSubmit={handleUpdatePercel} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Name (Auto-filled from logged-in user, read-only) */}
           <div className="col-span-1">
             <label htmlFor="name" className="block text-lg font-medium text-gray-700">Name</label>
@@ -80,6 +115,7 @@ const UpdateParcel = () => {
               id="phone"
               name='number'
               required
+              defaultValue={number}
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
               placeholder="Enter your phone number"
             />
@@ -209,7 +245,7 @@ const UpdateParcel = () => {
               type="submit"
               className="w-full p-4 bg-teal-500 text-white font-semibold rounded-md shadow-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500"
             >
-              Book My Parcel
+              Update My Parcel
             </button>
           </div>
         </form>

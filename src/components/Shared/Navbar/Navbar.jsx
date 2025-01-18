@@ -32,6 +32,15 @@ const Navbar = () => {
             {/* Dropdown Menu */}
             <div className="relative">
               <div className="flex flex-row items-center gap-3">
+                {/* home route */}
+                <div>
+                <Link
+                      to="/"
+                      className="block px-4 py-3 hover:bg-neutral-100 transition font-semibold"
+                    >
+                      Home
+                    </Link>
+                </div>
                 {/*notification btn */}
                 <div>
                   <IoNotifications className="text-2xl" />
@@ -69,15 +78,12 @@ const Navbar = () => {
               {isOpen && (
                 <div className="absolute rounded-xl shadow-md w-[40vw] md:w-[10vw] bg-white overflow-hidden right-0 top-12 text-sm">
                   <div className="flex flex-col cursor-pointer">
-                    <Link
-                      to="/"
-                      className="block md:hidden px-4 py-3 hover:bg-neutral-100 transition font-semibold"
-                    >
-                      Home
-                    </Link>
 
                     {user ? (
                       <>
+                        <div className="px-4 py-3 hover:bg-neutral-100 transition font-semibold cursor-pointer">
+                          Name: {user?.displayName}
+                        </div>
                         <Link
                           to="/dashboard"
                           className="px-4 py-3 hover:bg-neutral-100 transition font-semibold"

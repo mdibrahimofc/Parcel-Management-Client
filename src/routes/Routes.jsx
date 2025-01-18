@@ -52,7 +52,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'update-parcel/:id',
+        path: '/dashboard/update-parcel/:id',
         element: (
           <PrivateRoute>
             <UpdateParcel/>

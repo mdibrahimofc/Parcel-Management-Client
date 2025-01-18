@@ -7,22 +7,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
-import useAuth from "@/hooks/useAuth";
-import useAxiosSecure from "@/hooks/useAxiosSecure";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import useMyParcels from "@/hooks/useMyParcels";
 
 const MyParcel = () => {
-  const { user } = useAuth();
-  const axiosSecure = useAxiosSecure();
-
-  const { data: parcels = [], isLoading } = useQuery({
-    queryKey: ["My-Parcel", user?.email],
-    queryFn: async () => {
-      const { data } = await axiosSecure(`/parcel/${user?.email}`);
-      return data;
-    },
-  });
+  const { parcels, isLoading } = useMyParcels()
 
   const handleCancel = (id) => {
     if (window.confirm("Are you sure you want to cancel this booking?")) {
@@ -69,7 +58,7 @@ const MyParcel = () => {
                 <TableCell>{parcel.bookingStatus}</TableCell>
                 <TableCell className="text-right flex flex-col md:flex-row justify-end gap-2">
                   <button>
-                    <Link to={`update-parcel/${parcel._id}`}>
+                    <Link to={`/dashboard/update-parcel/${parcel._id}`}>
                     Update
                     </Link>
                   </button>
