@@ -9,11 +9,12 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import useMyParcels from "@/hooks/useMyParcels";
-import CustomToast from "@/components/CustomToast/CustomToast";
 import toast from "react-hot-toast";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 
 const MyParcel = () => {
-  const { parcels = [], isLoading } = useMyParcels();
+  const { parcels = [], isLoading, refetch } = useMyParcels();
+  const axiosSecure = useAxiosSecure()
 
   const handleDelete = (id) => {
     toast(
@@ -23,11 +24,19 @@ const MyParcel = () => {
           <div className="flex gap-2 mt-2">
             <button
               className="bg-red-500 text-white px-3 py-1 rounded"
-              onClick={() => {
+              onClick={async() => {
                 // Perform the delete action
-                
-                deleteItem(id);
-                toast.dismiss(t.id); // Dismiss the toast
+                try{
+                const {data} = await axiosSecure.delete(`/parcel/delete/${id}`)
+                console.log(data)
+                toast.success("Item deleted successfully")
+                } catch(err){
+                  toast.error("Failed to delete the item. Please try again later.")
+                }
+                finally{
+                  toast.dismiss(t.id);
+                  refetch()
+                }
               }}
             >
               Yes
@@ -45,10 +54,6 @@ const MyParcel = () => {
     );
   };
 
-  const deleteItem = (id) => {
-    console.log(`Deleted item with id: ${id}`);
-    toast.success("Item deleted successfully!");
-  };
 
   return (
     <div className="w-full md:w-11/12 mx-auto">
