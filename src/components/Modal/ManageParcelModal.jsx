@@ -1,4 +1,4 @@
-import { axiosSecure } from "@/hooks/useAxiosSecure";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
@@ -6,6 +6,8 @@ const ManageParcelModal = ({ isOpen, onClose, parcelId, onAssign }) => {
   const [deliveryMen, setDeliveryMen] = useState([]);
   const [selectedDeliveryMan, setSelectedDeliveryMan] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
+
+  const axiosSecure = useAxiosSecure()
 
   // Fetch the list of delivery men from the backend
   useEffect(() => {

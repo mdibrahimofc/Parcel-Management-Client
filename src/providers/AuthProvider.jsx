@@ -60,18 +60,25 @@ const AuthProvider = ({ children }) => {
         await axios.post(`${import.meta.env.VITE_API_URL}/user`, userData)
 
         // Get JWT token
-        await axios.post(
+        const {data} = await axios.post(
           `${import.meta.env.VITE_API_URL}/jwt`,
           {
             email: currentUser?.email,
-          },
-          { withCredentials: true }
+          }
+          // { withCredentials: true }
         )
+        if (data.token) {
+          localStorage.setItem('access-token', data.token);
+      }
+      else {
+        // TODO: remove token (if token stored in the client side: Local storage, caching, in memory)
+        localStorage.removeItem('access-token');
+    }
       } else {
         setUser(currentUser)
-        await axios.get(`${import.meta.env.VITE_API_URL}/logout`, {
-          withCredentials: true,
-        })
+        // await axios.get(`${import.meta.env.VITE_API_URL}/logout`, {
+        //   withCredentials: true,
+        // })
       }
       setLoading(false)
     })
