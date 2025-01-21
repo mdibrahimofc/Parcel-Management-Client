@@ -9,15 +9,45 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import useMyParcels from "@/hooks/useMyParcels";
+import CustomToast from "@/components/CustomToast/CustomToast";
+import toast from "react-hot-toast";
 
 const MyParcel = () => {
   const { parcels = [], isLoading } = useMyParcels();
 
-  const handleCancel = (id) => {
-    if (window.confirm("Are you sure you want to cancel this booking?")) {
-      // Update the booking status to 'canceled' (implement the cancel logic here)
-      console.log(`Booking ${id} canceled.`);
-    }
+  const handleDelete = (id) => {
+    toast(
+      (t) => (
+        <div>
+          <p>Are you sure you want to delete this item?</p>
+          <div className="flex gap-2 mt-2">
+            <button
+              className="bg-red-500 text-white px-3 py-1 rounded"
+              onClick={() => {
+                // Perform the delete action
+                
+                deleteItem(id);
+                toast.dismiss(t.id); // Dismiss the toast
+              }}
+            >
+              Yes
+            </button>
+            <button
+              className="bg-gray-300 px-3 py-1 rounded"
+              onClick={() => toast.dismiss(t.id)} // Dismiss the toast without action
+            >
+              No
+            </button>
+          </div>
+        </div>
+      ),
+      { duration: Infinity } // Keep the toast visible until user interaction
+    );
+  };
+
+  const deleteItem = (id) => {
+    console.log(`Deleted item with id: ${id}`);
+    toast.success("Item deleted successfully!");
   };
 
   return (
@@ -71,7 +101,7 @@ const MyParcel = () => {
                 </button>
                   }
                   <button
-                    onClick={() => handleCancel(parcel._id)}
+                    onClick={() => handleDelete(parcel._id)}
                     className={`px-2 py-1 border ${
                       parcel.status !== "pending"
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
