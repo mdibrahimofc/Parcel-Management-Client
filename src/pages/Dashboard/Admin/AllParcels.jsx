@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import ManageParcelModal from "@/components/Modal/ManageParcelModal";
+import toast from "react-hot-toast";
 
 const AllParcels = () => {
   const { user } = useAuth();
@@ -26,14 +27,14 @@ const AllParcels = () => {
   };
 
   const handleAssign = async (parcelId, deliveryManId, deliveryDate) => {
+    console.log(parcelId, deliveryManId, deliveryDate);
+    const parcelInfo = {parcelId, deliveryManId, deliveryDate}
     try {
-      await fetch(`/api/parcels/${parcelId}/assign`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ deliveryManId, deliveryDate }),
-      });
+      const {data} = await axiosSecure.patch("/parcel/manage/admin", parcelInfo)
 
-      alert("Parcel assigned successfully!");
+      if(data.modifiedCount){
+        toast.success("Parcel assigned successfully!");
+      }
       setIsModalOpen(false);
     } catch (error) {
       console.error("Error assigning parcel:", error);
@@ -50,7 +51,7 @@ const AllParcels = () => {
   console.log(parcels, isLoading);
   return (
     <div className="w-full md:w-11/12 mx-auto">
-      <Table className="shadow-md">
+      <Table className="shadow-md overflow-x-auto">
         <TableHeader className="bg-gray-200">
           <TableRow>
             <TableHead>Name</TableHead>

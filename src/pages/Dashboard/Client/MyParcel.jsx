@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import useMyParcels from "@/hooks/useMyParcels";
 
 const MyParcel = () => {
-  const { parcels, isLoading } = useMyParcels()
+  const { parcels = [], isLoading } = useMyParcels();
 
   const handleCancel = (id) => {
     if (window.confirm("Are you sure you want to cancel this booking?")) {
@@ -37,7 +37,7 @@ const MyParcel = () => {
         <TableBody>
           {isLoading ? (
             <TableRow>
-              <TableCell colSpan={7}>
+              <TableCell colSpan={7} className="text-center">
                 <Progress value={50} />
               </TableCell>
             </TableRow>
@@ -52,24 +52,32 @@ const MyParcel = () => {
               <TableRow key={parcel._id}>
                 <TableCell className="font-medium">{parcel.parcelType}</TableCell>
                 <TableCell>{parcel.deliveryDate}</TableCell>
-                <TableCell>{parcel.approximateDeliveryDate}</TableCell>
+                <TableCell>{parcel.approxDeliveryDate || "N/A"}</TableCell>
                 <TableCell>{new Date(parcel.bookingDate).toLocaleDateString()}</TableCell>
-                <TableCell>{parcel.deliveryMenId || "N/A"}</TableCell>
-                <TableCell>{parcel.bookingStatus}</TableCell>
+                <TableCell>{parcel.deliveryManId || "N/A"}</TableCell>
+                <TableCell>{parcel.status}</TableCell>
                 <TableCell className="text-right flex flex-col md:flex-row justify-end gap-2">
-                  <button>
-                    <Link to={`/dashboard/update-parcel/${parcel._id}`}>
-                    Update
+                  {parcel.status === "pending" ? (
+                    <Link
+                      to={`/dashboard/update-parcel/${parcel._id}`}
+                      className="px-2 py-1 border bg-blue-500 text-white"
+                    >
+                      Update
                     </Link>
-                  </button>
+                  ) : <button disabled
+                  className="px-2 py-1 border bg-red-500 text-white"
+                >
+                  Update
+                </button>
+                  }
                   <button
                     onClick={() => handleCancel(parcel._id)}
                     className={`px-2 py-1 border ${
-                      parcel.bookingStatus !== "pending"
+                      parcel.status !== "pending"
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                         : "bg-red-500 text-white"
                     }`}
-                    disabled={parcel.bookingStatus !== "pending"}
+                    disabled={parcel.status !== "pending"}
                   >
                     Cancel
                   </button>

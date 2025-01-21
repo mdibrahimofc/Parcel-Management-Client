@@ -33,6 +33,7 @@ const BookParcel = () => {
         parcel.weight = +parcel.weight
         parcel.name = user?.displayName
         parcel.email = user?.email
+        parcel.status = "pending"
         parcel.bookingDate = new Date()
         console.log(parcel);
         if(parcel.weight === 0){

@@ -29,7 +29,7 @@ export const router = createBrowserRouter([
   {
     path: '/dashboard',
     element: (
-      <PrivateRoute>
+      <PrivateRoute role={"common"}>
         <DashboardLayout />
       </PrivateRoute>
     ),
@@ -38,7 +38,7 @@ export const router = createBrowserRouter([
       {
         path: 'book-parcel',
         element: (
-          <PrivateRoute>
+          <PrivateRoute role={"User"}>
             <BookParcel/>
           </PrivateRoute>
         ),
@@ -46,7 +46,7 @@ export const router = createBrowserRouter([
       {
         path: 'my-parcel',
         element: (
-          <PrivateRoute>
+          <PrivateRoute role={"User"}>
             <MyParcel/>
           </PrivateRoute>
         ),
@@ -54,7 +54,7 @@ export const router = createBrowserRouter([
       {
         path: '/dashboard/update-parcel/:id',
         element: (
-          <PrivateRoute>
+          <PrivateRoute role={"User"}>
             <UpdateParcel/>
           </PrivateRoute>
         ),
@@ -63,7 +63,7 @@ export const router = createBrowserRouter([
       {
         path: 'all-parcels',
         element: (
-          <PrivateRoute>
+          <PrivateRoute role={"Admin"}>
             <AllParcels/>
           </PrivateRoute>
         ),
@@ -71,7 +71,7 @@ export const router = createBrowserRouter([
       {
         path: 'profile',
         element: (
-          <PrivateRoute>
+          <PrivateRoute role={"common"}>
             <Profile />
           </PrivateRoute>
         ),

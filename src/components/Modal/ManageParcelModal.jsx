@@ -1,4 +1,6 @@
+import { axiosSecure } from "@/hooks/useAxiosSecure";
 import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 const ManageParcelModal = ({ isOpen, onClose, parcelId, onAssign }) => {
   const [deliveryMen, setDeliveryMen] = useState([]);
@@ -9,11 +11,10 @@ const ManageParcelModal = ({ isOpen, onClose, parcelId, onAssign }) => {
   useEffect(() => {
     const fetchDeliveryMen = async () => {
       try {
-        const response = await fetch("/api/deliverymen"); // Replace with your API endpoint
-        const data = await response.json();
+        const {data} = await axiosSecure("/user/deliveryMan")
         setDeliveryMen(data);
       } catch (error) {
-        console.error("Error fetching delivery men:", error);
+        toast.error("Error fetching delivery men:", error);
       }
     };
 
@@ -45,7 +46,7 @@ const ManageParcelModal = ({ isOpen, onClose, parcelId, onAssign }) => {
               <option value="">Select a delivery man</option>
               {deliveryMen.map((man) => (
                 <option key={man._id} value={man._id}>
-                  {man.name} ({man.phone})
+                  {man.name} ({man.email})
                 </option>
               ))}
             </select>

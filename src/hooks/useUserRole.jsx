@@ -14,7 +14,7 @@ const useUserRole = () => {
       return data.role
     }
   })
-  return userRole
+  return {userRole, isLoading}
 };
 
 export default useUserRole;

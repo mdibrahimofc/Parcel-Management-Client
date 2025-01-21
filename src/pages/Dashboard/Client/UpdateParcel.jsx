@@ -1,6 +1,5 @@
 import useAuth from '@/hooks/useAuth';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
-import { number } from 'prop-types';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
@@ -8,13 +7,12 @@ import { useParams } from 'react-router-dom';
 const UpdateParcel = () => {
     const {user} = useAuth()
     const axiosSecure = useAxiosSecure()
-    const [prices, setPrices] = useState(0)
     const [parcels, setParcels] = useState({})
 
       const {id} = useParams()
-      console.log(id);
+      console.log(id, typeof(id));
       const loadParcel = async () => {
-        const {data} = await axiosSecure(`/parcel/${id}`)
+        const {data} = await axiosSecure.get(`/parcels/${id}`)
         setParcels(data)
         console.log(data);
       }
@@ -34,6 +32,9 @@ const UpdateParcel = () => {
         name,
         email} = parcels
         console.log(parcels);
+
+    const [prices, setPrices] = useState(price)
+    console.log(price, prices);
 
     const handleWeight = e => {
       const weight = +e.target.value
@@ -60,15 +61,17 @@ const UpdateParcel = () => {
       parcel.weight = +parcel.weight
       parcel.name = user?.displayName
       parcel.email = user?.email
+      parcel.status = "pending"
       parcel.bookingDate = new Date()
+      console.log(parcel);
       if(parcel.weight === 0){
         toast.error("Weight can not be 0")
         return
       }
       try{
-        const {data} = await axiosSecure.post("/parcel", parcel)
-      if(data.insertedId){
-        toast.success("Your parcel booked successfully")
+        const {data} = await axiosSecure.patch(`/update-parcel/${id}`, parcel)
+      if(data.modifiedCount){
+        toast.success("Your parcel upadated successfully")
       } 
       }
       catch(err){
@@ -128,6 +131,7 @@ const UpdateParcel = () => {
               type="text"
               id="parcelType"
               name='parcelType'
+              defaultValue={parcelType}
               required
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
               placeholder="Enter parcel type"
@@ -143,6 +147,7 @@ const UpdateParcel = () => {
               name='weight'
               min="0"
               onChange={handleWeight}
+              defaultValue={weight}
               required
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
               placeholder="Enter weight in kg"
@@ -156,6 +161,7 @@ const UpdateParcel = () => {
               type="text"
               id="receiverName"
               name='receiverName'
+              defaultValue={receiverName}
               required
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
               placeholder="Enter receiver's name"
@@ -169,6 +175,7 @@ const UpdateParcel = () => {
               type="tel"
               id="receiverPhone"
               name='receiverPhone'
+              defaultValue={receiverPhone}
               required
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
               placeholder="Enter receiver's phone number"
@@ -182,6 +189,7 @@ const UpdateParcel = () => {
               type="text"
               id="address"
               name='address'
+              defaultValue={address}
               required
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
               placeholder="Enter delivery address"
@@ -195,6 +203,7 @@ const UpdateParcel = () => {
               type="date"
               id="deliveryDate"
               name='deliveryDate'
+              defaultValue={deliveryDate}
               required
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
@@ -207,6 +216,7 @@ const UpdateParcel = () => {
               type="text"
               id="latitude"
               name='latitude'
+              defaultValue={latitude}
               required
               placeholder="21.121365496"
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -220,6 +230,7 @@ const UpdateParcel = () => {
               type="text"
               id="longitude"
               name='longitude'
+              defaultValue={longitude}
               required
               placeholder="21.121365496"
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -233,11 +244,12 @@ const UpdateParcel = () => {
               type="text"
               id="price"
               name='price'
-              value={prices}
+              value={prices ? prices : price}
               readOnly
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
           </div>
+          
 
           {/* Book Button */}
           <div className="col-span-1">

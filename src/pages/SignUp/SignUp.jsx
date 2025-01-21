@@ -12,11 +12,13 @@ import useAuth from "../../hooks/useAuth";
 import { toast } from "react-hot-toast";
 import useUpload from "@/hooks/useUpload";
 import axios from "axios";
+import { useState } from "react";
 
 const SignUp = () => {
   const { createUser, updateUserProfile, signInWithGoogle, loading } =
     useAuth();
   const navigate = useNavigate();
+  const [loadings, setLoadings] = useState(false)
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -35,14 +37,17 @@ const SignUp = () => {
     }
 
     try {
+      setLoadings(true)
       await axios.post(`${import.meta.env.VITE_API_URL}/user`, userData);
       await createUser(email, password);
       await updateUserProfile(name, image);
       navigate("/");
       toast.success("Signup Successful");
+      setLoadings(false)
     } catch (err) {
       console.log(err);
       toast.error(err?.message);
+      setLoadings(false)
     }
   };
 
@@ -143,9 +148,9 @@ const SignUp = () => {
             <button
               type="submit"
               className="w-full bg-indigo-500 text-white py-2 rounded-lg font-semibold hover:bg-indigo-600 focus:ring-4 focus:ring-indigo-300"
-              disabled={loading}
+              disabled={loading || loadings}
             >
-              {loading ? <TbFidgetSpinner className="animate-spin mx-auto" size={20} /> : "Sign Up"}
+              {loading || loadings ? <TbFidgetSpinner className="animate-spin mx-auto" size={20} /> : "Sign Up"}
             </button>
           </form>
           <div className="text-center mt-4">
