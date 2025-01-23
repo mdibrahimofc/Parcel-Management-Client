@@ -65,13 +65,11 @@ const AuthProvider = ({ children }) => {
           {
             email: currentUser?.email,
           }
-          // { withCredentials: true }
         )
         if (data.token) {
           localStorage.setItem('access-token', data.token);
       }
       else {
-        // TODO: remove token (if token stored in the client side: Local storage, caching, in memory)
         localStorage.removeItem('access-token');
     }
       } else {

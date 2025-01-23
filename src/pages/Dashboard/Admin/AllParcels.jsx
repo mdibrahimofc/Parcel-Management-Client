@@ -42,7 +42,7 @@ const AllParcels = () => {
   };
 
   const { data: parcels = [], isLoading } = useQuery({
-    queryKey: ["My-Parcel", user?.email],
+    queryKey: ["All-Parcel"],
     queryFn: async () => {
       const { data } = await axiosSecure(`/parcel`);
       return data;
@@ -51,6 +51,8 @@ const AllParcels = () => {
   console.log(parcels, isLoading);
   return (
     <div className="w-full md:w-11/12 mx-auto">
+      <h1 className="text-xl md:text-2xl mb-4 font-bold">All Parcels ({parcels.length})</h1>
+      <p>Select Date Rage</p>
       <Table className="shadow-md overflow-x-auto">
         <TableHeader className="bg-gray-200">
           <TableRow>

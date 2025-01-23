@@ -1,5 +1,6 @@
 import useAuth from '@/hooks/useAuth';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
+import { number } from 'prop-types';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
@@ -40,15 +41,17 @@ const BookParcel = () => {
           toast.error("Weight can not be 0")
           return
         }
-        try{
-          const {data} = await axiosSecure.post("/parcel", parcel)
-        if(data.insertedId){
-          toast.success("Your parcel booked successfully")
-        } 
-        }
-        catch(err){
-          toast.error( `something happened wrong, parcel not booked ${err}`)
-        }
+        try {
+          const response = await axiosSecure.post("/parcel", parcel);
+          const updatedUser = await axiosSecure.patch(`/user/${user?.email}`, { number: parcel.number });
+          console.log(response);
+      
+          if (response.data.insertedId) {
+              toast.success("Your parcel booked successfully");
+          }
+      } catch (err) {
+          toast.error(`Something went wrong, parcel not booked: ${err.message}`);
+      }      
     }
   return (
     <section className="bg-gradient-to-r from-blue-100 to-teal-200 py-16 px-6">
@@ -63,7 +66,7 @@ const BookParcel = () => {
             <input
               type="text"
               id="name"
-              name=''
+              name='name'
               value={user?.displayName}
               readOnly
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -178,7 +181,7 @@ const BookParcel = () => {
           <div className="col-span-1">
             <label htmlFor="latitude" className="block text-lg font-medium text-gray-700">Delivery Address Latitude</label>
             <input
-              type="text"
+              type="number"
               id="latitude"
               name='latitude'
               required
@@ -191,7 +194,7 @@ const BookParcel = () => {
           <div className="col-span-1">
             <label htmlFor="longitude" className="block text-lg font-medium text-gray-700">Delivery Address Longitude</label>
             <input
-              type="text"
+              type="number"
               id="longitude"
               name='longitude'
               required
