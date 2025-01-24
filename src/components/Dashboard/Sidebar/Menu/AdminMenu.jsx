@@ -9,6 +9,11 @@ const AdminMenu = () => {
             label='All Parcels'
             address='all-parcels'
           />
+    <MenuItem
+            icon={IoIosListBox}
+            label='All Delivery Man'
+            address='all-delivery-man'
+          />
     </>
   )
 }

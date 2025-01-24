@@ -15,10 +15,11 @@ const AllDeliveryMen = () => {
 
     const { data: deliveryMan = [], isLoading } = useQuery({
         queryFn: async () => {
-          const { data } = await axiosSecure.get("/delivery-men");
+          const { data } = await axiosSecure.get("/user/deliveryMan");
           return data;
         },
       });
+      console.log(deliveryMan);
   return (
     <div className="w-full md:w-11/12 mx-auto">
       <h1 className="text-xl md:text-2xl mb-4 font-bold">
@@ -31,11 +32,8 @@ const AllDeliveryMen = () => {
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Phone</TableHead>
-            <TableHead>Booking Date</TableHead>
-            <TableHead>Requested Delivery Date</TableHead>
-            <TableHead>Cost</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead>Delivered Parcel</TableHead>
+            <TableHead>Average Review</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -52,30 +50,14 @@ const AllDeliveryMen = () => {
               </TableCell>
             </TableRow>
           ) : (
-            deliveryMan.map((parcel) => (
-              <TableRow key={parcel._id}>
-                <TableCell className="font-medium">{parcel.name}</TableCell>
-                <TableCell>{parcel.number}</TableCell>
+            deliveryMan.map((dMan) => (
+              <TableRow key={dMan._id}>
+                <TableCell className="font-medium">{dMan.name}</TableCell>
+                <TableCell>{dMan.number}</TableCell>
                 <TableCell>
-                  {new Date(parcel.bookingDate).toLocaleDateString()}
+                  {2}
                 </TableCell>
-                <TableCell>{parcel.deliveryDate}</TableCell>
-                <TableCell>{parcel.price || "N/A"}</TableCell>
-                <TableCell>{parcel.status || "pending"}</TableCell>
-                <TableCell>
-                  <button
-                    onClick={() => handleManageClick(parcel._id)}
-                    className="bg-blue-500 text-white px-2 py-1 rounded"
-                  >
-                    Manage Parcel
-                  </button>
-                </TableCell>
-                <ManageParcelModal
-                  isOpen={isModalOpen}
-                  onClose={() => setIsModalOpen(false)}
-                  parcelId={selectedParcel}
-                  onAssign={handleAssign}
-                />
+                <TableCell>{dMan.deliveryDate}</TableCell>
               </TableRow>
             ))
           )}

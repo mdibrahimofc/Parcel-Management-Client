@@ -11,6 +11,7 @@ import BookParcel from '@/pages/Dashboard/Client/BookParcel'
 import MyParcel from '@/pages/Dashboard/Client/MyParcel'
 import UpdateParcel from '@/pages/Dashboard/Client/UpdateParcel'
 import AllParcels from '@/pages/Dashboard/Admin/AllParcels'
+import AllDeliveryMen from '@/pages/Dashboard/Admin/AllDeliveryMen'
 
 export const router = createBrowserRouter([
   {
@@ -67,6 +68,12 @@ export const router = createBrowserRouter([
             <AllParcels/>
           </PrivateRoute>
         ),
+      },
+      {
+        path: "all-delivery-man",
+        element: <PrivateRoute role={"Admin"}>
+          <AllDeliveryMen/>
+        </PrivateRoute>
       },
       {
         path: 'profile',
