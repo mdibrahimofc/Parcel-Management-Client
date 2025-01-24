@@ -10,7 +10,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
-import { Link } from "react-router-dom";
 import { useState } from "react";
 import ManageParcelModal from "@/components/Modal/ManageParcelModal";
 import toast from "react-hot-toast";
@@ -20,6 +19,14 @@ const AllParcels = () => {
   const axiosSecure = useAxiosSecure();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedParcel, setSelectedParcel] = useState(null);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [queryParams, setQueryParams] = useState({});
+
+  const handleSearch = () => {
+    setQueryParams({ from: fromDate, to: toDate });
+  };
+  console.log(queryParams);
 
   const handleManageClick = (parcelId) => {
     setSelectedParcel(parcelId);
@@ -28,11 +35,11 @@ const AllParcels = () => {
 
   const handleAssign = async (parcelId, deliveryManId, deliveryDate) => {
     console.log(parcelId, deliveryManId, deliveryDate);
-    const parcelInfo = {parcelId, deliveryManId, deliveryDate}
+    const parcelInfo = { parcelId, deliveryManId, deliveryDate };
     try {
-      const {data} = await axiosSecure.patch("/parcel/manage/admin", parcelInfo)
+      const { data } = await axiosSecure.patch("/parcel/manage/admin", parcelInfo);
 
-      if(data.modifiedCount){
+      if (data.modifiedCount) {
         toast.success("Parcel assigned successfully!");
       }
       setIsModalOpen(false);
@@ -42,17 +49,47 @@ const AllParcels = () => {
   };
 
   const { data: parcels = [], isLoading } = useQuery({
-    queryKey: ["All-Parcel"],
+    queryKey: ["All-Parcel", queryParams],
     queryFn: async () => {
-      const { data } = await axiosSecure(`/parcel`);
+      const { from, to } = queryParams;
+      const { data } = await axiosSecure.get(`/parcel`, {
+        params: { from, to },
+      });
       return data;
     },
   });
-  console.log(parcels, isLoading);
+
   return (
     <div className="w-full md:w-11/12 mx-auto">
-      <h1 className="text-xl md:text-2xl mb-4 font-bold">All Parcels ({parcels.length})</h1>
-      <p>Select Date Rage</p>
+      <h1 className="text-xl md:text-2xl mb-4 font-bold">
+        All Parcels ({parcels.length})
+      </h1>
+
+      <div className="mb-4">
+        <p>Select Date Range:</p>
+        <div className="flex gap-2 items-center">
+          <input
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="border px-2 py-1 rounded"
+          />
+          <span>to</span>
+          <input
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            className="border px-2 py-1 rounded"
+          />
+          <button
+            onClick={handleSearch}
+            className="bg-blue-500 text-white px-4 py-1 rounded"
+          >
+            Search
+          </button>
+        </div>
+      </div>
+
       <Table className="shadow-md overflow-x-auto">
         <TableHeader className="bg-gray-200">
           <TableRow>
