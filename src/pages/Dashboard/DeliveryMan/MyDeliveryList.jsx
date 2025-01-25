@@ -51,14 +51,14 @@ const MyDeliveryList = () => {
                 <Progress value={50} />
               </TableCell>
             </TableRow>
-          ) : parcels.length === 0 ? (
+          ) : data.length === 0 ? (
             <TableRow>
               <TableCell colSpan={7} className="text-center">
                 No parcels found.
               </TableCell>
             </TableRow>
           ) : (
-            parcels.map((parcel) => (
+            data.map((parcel) => (
               <TableRow key={parcel._id}>
                 <TableCell className="font-medium">{parcel.name}</TableCell>
                 <TableCell>{parcel.number}</TableCell>

@@ -11,6 +11,11 @@ const CustomerMenu = () => {
                   label='My Delivery List'
                   address='my-delivery-list'
                 />
+      <MenuItem
+                  icon={IoIosListBox}
+                  label='My Reviews'
+                  address='my-reviews'
+                />
     </>
   )
 }
