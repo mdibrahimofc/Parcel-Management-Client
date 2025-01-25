@@ -1,5 +1,7 @@
 import MenuItem from "./MenuItem"
 import { IoIosListBox } from "react-icons/io";
+import { FcBusinessman } from "react-icons/fc";
+import { FaUser } from "react-icons/fa";
 
 const AdminMenu = () => {
   return (
@@ -9,10 +11,17 @@ const AdminMenu = () => {
             label='All Parcels'
             address='all-parcels'
           />
+
     <MenuItem
-            icon={IoIosListBox}
+            icon={FcBusinessman}
             label='All Delivery Man'
             address='all-delivery-man'
+          />
+
+    <MenuItem
+            icon={FaUser}
+            label='All Users'
+            address='all-users'
           />
     </>
   )

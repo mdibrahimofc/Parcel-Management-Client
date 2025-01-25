@@ -1,5 +1,6 @@
 import useAuth from '@/hooks/useAuth';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
+import { useQuery } from '@tanstack/react-query';
 import { number } from 'prop-types';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -8,6 +9,16 @@ const BookParcel = () => {
     const {user} = useAuth()
     const axiosSecure = useAxiosSecure()
     const [prices, setPrices] = useState(0)
+
+    const {data:client = {}, refetch } = useQuery({
+      queryKey: ["user", user?.email],
+      queryFn: async () => {
+        const {data} = await axiosSecure.get(`/user/${user?.email}`)
+        console.log(data);
+        return data
+      }
+    })
+    console.log(client);
 
     const handleWeight = e => {
       const weight = +e.target.value
@@ -36,6 +47,7 @@ const BookParcel = () => {
         parcel.email = user?.email
         parcel.status = "pending"
         parcel.bookingDate = new Date()
+
         console.log(parcel);
         if(parcel.weight === 0){
           toast.error("Weight can not be 0")
@@ -43,7 +55,18 @@ const BookParcel = () => {
         }
         try {
           const response = await axiosSecure.post("/parcel", parcel);
-          const updatedUser = await axiosSecure.patch(`/user/${user?.email}`, { number: parcel.number });
+
+          if(!client.bookedParcel){
+          const bookedParcel = 1
+          const updatedUser = await axiosSecure.patch(`/user/${user?.email}`, { number: parcel.number, bookedParcel: bookedParcel });
+          console.log(updatedUser);
+          refetch()
+          }else{
+            const bookedParcel = client.bookedParcel + 1
+          const updatedUser = await axiosSecure.patch(`/user/${user?.email}`, { number: parcel.number, bookedParcel: bookedParcel });
+          console.log(updatedUser);
+          refetch()
+          }
           console.log(response);
       
           if (response.data.insertedId) {

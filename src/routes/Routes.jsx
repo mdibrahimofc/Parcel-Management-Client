@@ -12,6 +12,8 @@ import MyParcel from '@/pages/Dashboard/Client/MyParcel'
 import UpdateParcel from '@/pages/Dashboard/Client/UpdateParcel'
 import AllParcels from '@/pages/Dashboard/Admin/AllParcels'
 import AllDeliveryMen from '@/pages/Dashboard/Admin/AllDeliveryMen'
+import AllUsers from '@/pages/Dashboard/Admin/AllUsers'
+import MyDeliveryList from '@/pages/Dashboard/DeliveryMan/MyDeliveryList'
 
 export const router = createBrowserRouter([
   {
@@ -73,6 +75,19 @@ export const router = createBrowserRouter([
         path: "all-delivery-man",
         element: <PrivateRoute role={"Admin"}>
           <AllDeliveryMen/>
+        </PrivateRoute>
+      },
+      {
+        path: "all-users",
+        element: <PrivateRoute role={"Admin"}>
+          <AllUsers/>
+        </PrivateRoute>
+      },
+      // Delivery Man routes 
+      {
+        path: "my-delivery-list",
+        element: <PrivateRoute role={"Delivery Man"}>
+          <MyDeliveryList/>
         </PrivateRoute>
       },
       {
