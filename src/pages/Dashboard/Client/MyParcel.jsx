@@ -105,7 +105,11 @@ const MyParcel = () => {
       toast.error("Please fill out all fields.");
       return;
     }
-
+    reviewData.rating = parseInt(reviewData.rating)
+    if(reviewData.rating <1 || reviewData.rating > 5){
+      toast.error("Rating must be 1 to 5!")
+      return
+    }
 
     reviewData.deliveryManId = deliveryId
     reviewData.name = user?.displayName
@@ -127,7 +131,9 @@ const MyParcel = () => {
       setReviewModal({ open: false, parcelId: null });
       setReviewData({ rating: "", comment: "" });
     } catch (err) {
-      toast.error("Failed to submit review. Please try again.");
+      toast.error("Review already added");
+      setReviewModal({ open: false, parcelId: null });
+      setReviewData({ rating: "", comment: "" });
     }
   };
 
