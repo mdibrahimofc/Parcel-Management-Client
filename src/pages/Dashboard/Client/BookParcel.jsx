@@ -47,7 +47,7 @@ const BookParcel = () => {
         parcel.email = user?.email
         parcel.status = "pending"
         parcel.bookingDate = new Date()
-
+        parcel.deliveryDate = new Date(parcel.deliveryDate)
         console.log(parcel);
         if(parcel.weight === 0){
           toast.error("Weight can not be 0")
@@ -112,7 +112,7 @@ const BookParcel = () => {
           <div className="col-span-1">
             <label htmlFor="phone" className="block text-lg font-medium text-gray-700">Phone Number</label>
             <input
-              type="tel"
+              type="number"
               id="phone"
               name='number'
               required
@@ -166,7 +166,7 @@ const BookParcel = () => {
           <div className="col-span-1">
             <label htmlFor="receiverPhone" className="block text-lg font-medium text-gray-700">Receiver's Phone Number</label>
             <input
-              type="tel"
+              type="number"
               id="receiverPhone"
               name='receiverPhone'
               required

@@ -18,32 +18,33 @@ const SignUp = () => {
   const { createUser, updateUserProfile, signInWithGoogle, loading } =
     useAuth();
   const navigate = useNavigate();
-  const [loadings, setLoadings] = useState(false)
 
   const handleSubmit = async (event) => {
+    toast.error("please wait a few moment!")
     event.preventDefault();
     const form = event.target;
     const name = form.name.value;
+    const number = form.number.value;
     const email = form.email.value;
     const password = form.password.value;
     const role = form.role.value;
     const imageFile = form.image.files[0];
     const image = await useUpload(imageFile);
 
-    const userData = { name, email, image, role };
-    if(!role || !image || !name || !email){
+    const userData = { name, email, image, role, number };
+    console.log(userData);
+    if(!role || !image || !name || !email || !number){
       toast.error("All field must be fill up!")
       return
     }
 
     try {
-      setLoadings(true)
-      await axios.post(`${import.meta.env.VITE_API_URL}/user`, userData);
+      const {data} = await axios.post(`${import.meta.env.VITE_API_URL}/user`, userData);
+      console.log(data);
       await createUser(email, password);
       await updateUserProfile(name, image);
       navigate("/");
       toast.success("Signup Successful");
-      setLoadings(false)
     } catch (err) {
       console.log(err);
       toast.error(err?.message);
@@ -102,6 +103,7 @@ const SignUp = () => {
               <input
                 type="file"
                 name="image"
+                required
                 id="image"
                 accept="image/*"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -120,6 +122,18 @@ const SignUp = () => {
                   <SelectItem value="Delivery Man">Delivery Man</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-600">
+                Phone Number
+              </label>
+              <input
+                type="number"
+                name="number"
+                id="number"
+                placeholder="Enter your number"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+              />
             </div>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-600">
@@ -148,9 +162,9 @@ const SignUp = () => {
             <button
               type="submit"
               className="w-full bg-indigo-500 text-white py-2 rounded-lg font-semibold hover:bg-indigo-600 focus:ring-4 focus:ring-indigo-300"
-              disabled={loading || loadings}
+              disabled={loading}
             >
-              {loading || loadings ? <TbFidgetSpinner className="animate-spin mx-auto" size={20} /> : "Sign Up"}
+              {loading ? <TbFidgetSpinner className="animate-spin mx-auto" size={20} /> : "Sign Up"}
             </button>
           </form>
           <div className="text-center mt-4">

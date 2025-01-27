@@ -37,10 +37,13 @@ const AllParcels = () => {
     console.log(parcelId, deliveryManId, deliveryDate);
     const parcelInfo = { parcelId, deliveryManId, deliveryDate };
     try {
-      const { data } = await axiosSecure.patch("/parcel/manage/admin", parcelInfo);
+      const { data } = await axiosSecure.patch(`/parcel/manage/admin/${parcelId}`, parcelInfo);
 
       if (data.modifiedCount) {
         toast.success("Parcel assigned successfully!");
+        refetch()
+      }else if(data.matchedCount){
+        toast.error("Parcel alredy assigned in delivery man!")
       }
       setIsModalOpen(false);
     } catch (error) {
@@ -48,7 +51,7 @@ const AllParcels = () => {
     }
   };
 
-  const { data: parcels = [], isLoading } = useQuery({
+  const { data: parcels = [], isLoading, refetch } = useQuery({
     queryKey: ["All-Parcel", queryParams],
     queryFn: async () => {
       const { from, to } = queryParams;

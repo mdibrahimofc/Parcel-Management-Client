@@ -15,6 +15,7 @@ import AllDeliveryMen from '@/pages/Dashboard/Admin/AllDeliveryMen'
 import AllUsers from '@/pages/Dashboard/Admin/AllUsers'
 import MyDeliveryList from '@/pages/Dashboard/DeliveryMan/MyDeliveryList'
 import MyReviews from '@/pages/Dashboard/DeliveryMan/MyReviews'
+import StatisticsPage from '@/pages/Dashboard/Admin/export default StatisticsPage;'
 
 export const router = createBrowserRouter([
   {
@@ -64,6 +65,14 @@ export const router = createBrowserRouter([
         ),
       },
       // admin route
+      {
+        path: 'statistics',
+        element: (
+          <PrivateRoute role={"Admin"}>
+            <StatisticsPage/>
+          </PrivateRoute>
+        ),
+      },
       {
         path: 'all-parcels',
         element: (

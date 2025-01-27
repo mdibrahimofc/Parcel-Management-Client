@@ -19,10 +19,40 @@ import { Link } from "react-router-dom";
 import useMyParcels from "@/hooks/useMyParcels";
 import toast from "react-hot-toast";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
+import useAuth from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useEffect, useState } from "react";
 
 const MyParcel = () => {
-  const { parcels = [], isLoading, refetch } = useMyParcels();
+  const [parcels, setParcels] = useState([]);
+  const [isLoading, setIsLoadings] = useState(true);
+  const [reviewModal, setReviewModal] = useState({
+    open: false,
+    parcelId: null,
+    deliveryId: null,
+  });
+  const [reviewData, setReviewData] = useState({ rating: "", comment: "" });
+  const [deliveryId, setDeliveryId] = useState("");
   const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const loadParcels = async () => {
+      setIsLoadings(true);
+      const { data } = await axiosSecure(`/parcel/${user?.email}`);
+      setParcels(data);
+      setIsLoadings(false);
+    };
+    loadParcels();
+  }, []);
 
   const handleDelete = (id) => {
     toast(
@@ -61,6 +91,38 @@ const MyParcel = () => {
     );
   };
 
+  const hanleStatus = async (status) => {
+    console.log(status);
+    const { data } = await axiosSecure.post("/parcel/status", {
+      status,
+      email: user?.email,
+    });
+    setParcels(data);
+  };
+
+  const handleReviewSubmit = async () => {
+    if (!reviewData.rating || !reviewData.comment) {
+      toast.error("Please fill out all fields.");
+      return;
+    }
+
+    console.log(reviewData.rating, reviewData.comment, deliveryId);
+
+    
+
+    try {
+      await axiosSecure.post(
+        `/parcel/review/${reviewModal.parcelId}`,
+        reviewData
+      );
+      toast.success("Review submitted successfully.");
+      setReviewModal({ open: false, parcelId: null });
+      setReviewData({ rating: "", comment: "" });
+    } catch (err) {
+      toast.error("Failed to submit review. Please try again.");
+    }
+  };
+
   return (
     <div className="w-full md:w-11/12 mx-auto">
       <header className="text-center my-6">
@@ -70,16 +132,19 @@ const MyParcel = () => {
         </p>
       </header>
       <div className="flex sticky top-0 justify-between items-center p-4 bg-white shadow-md rounded-md mb-4">
-        <p className="font-semibold px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-lg">Filter by Status</p>
+        <p className="font-semibold px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-lg">
+          Filter by Status
+        </p>
         <div>
-          <Select>
+          <Select name="status" onValueChange={hanleStatus}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">Pending</SelectItem>
-              <SelectItem value="dark">On the way</SelectItem>
-              <SelectItem value="system">Delivered</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="On the way">On the way</SelectItem>
+              <SelectItem value="Delivered">Delivered</SelectItem>
+              <SelectItem value="Cancelled">Cancelled</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -150,21 +215,98 @@ const MyParcel = () => {
                   >
                     Cancel
                   </button>
-                  {parcel.bookingStatus === "delivered" && (
+                  {parcel.status === "Delivered" && (
                     <button
-                      onClick={() => console.log(`Reviewing ${parcel._id}`)}
-                      className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
+                      onClick={() => {
+                        setReviewModal({
+                          open: true,
+                          parcelId: parcel._id,
+                          deliveryId: parcel.deliveryManId,
+                        });
+                        setDeliveryId(parcel.deliveryManId);
+                      }}
+                      className="bg-green-500 px-3 py-1 rounded text-white hover:bg-green-600"
                     >
                       Review
                     </button>
                   )}
-                  {parcel.paymentStatus !== "paid" && (
-                    <button
-                      onClick={() => console.log(`Paying for ${parcel._id}`)}
-                      className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+                  <button
+                    onClick={() => console.log(parcel._id)}
+                    className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+                  >
+                    Pay
+                  </button>
+
+                  {/* Review Modal */}
+                  {reviewModal.open && (
+                    <Dialog
+                      open={reviewModal.open}
+                      onOpenChange={() =>
+                        setReviewModal({ open: false, parcelId: null })
+                      }
                     >
-                      Pay
-                    </button>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Give Review</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div className="flex justify-end mr-4 md:mr-10">
+                            <img
+                              className="w-10 sm:w-20 md:w-28"
+                              src={user?.photoURL}
+                              alt={user?.displayName}
+                            />
+                          </div>
+                          <Input
+                            type="text"
+                            value={user?.displayName}
+                            disabled
+                          />
+                          <Input
+                            type="text"
+                            value={reviewModal?.deliveryId}
+                            disabled
+                          />
+                          <Input
+                            type="number"
+                            placeholder="Rating (1-5)"
+                            value={reviewData.rating}
+                            onChange={(e) =>
+                              setReviewData({
+                                ...reviewData,
+                                rating: e.target.value,
+                              })
+                            }
+                          />
+                          <Textarea
+                            placeholder="Write your review here..."
+                            value={reviewData.comment}
+                            onChange={(e) =>
+                              setReviewData({
+                                ...reviewData,
+                                comment: e.target.value,
+                              })
+                            }
+                          />
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="secondary"
+                              onClick={() =>
+                                setReviewModal({ open: false, parcelId: null })
+                              }
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={handleReviewSubmit}
+                              className="bg-blue-500 text-white hover:bg-blue-600"
+                            >
+                              Submit
+                            </Button>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
                   )}
                 </TableCell>
               </TableRow>
