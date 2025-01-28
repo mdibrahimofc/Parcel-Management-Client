@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
 import useAuth from "@/hooks/useAuth";
+import { Progress } from "@/components/ui/progress";
 
 const MyReviews = () => {
   const axiosSecure = useAxiosSecure()
@@ -27,6 +28,10 @@ const MyReviews = () => {
         return data
     }
   })
+
+  if(isLoading){
+    return <Progress value={50} />
+  }
 
   return (
     <div className="p-6 md:p-10 bg-gray-50 min-h-screen">

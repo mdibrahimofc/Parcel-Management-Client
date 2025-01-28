@@ -109,7 +109,7 @@ export const router = createBrowserRouter([
       {
         path: 'profile',
         element: (
-          <PrivateRoute role={"common"}>
+          <PrivateRoute role={"User"}>
             <Profile />
           </PrivateRoute>
         ),

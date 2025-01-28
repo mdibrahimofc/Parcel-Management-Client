@@ -41,6 +41,7 @@ const MyParcel = () => {
   });
   const [reviewData, setReviewData] = useState({ rating: "", comment: "" });
   const [deliveryId, setDeliveryId] = useState("");
+  const [render, setRender] = useState(false)
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
 
@@ -52,7 +53,8 @@ const MyParcel = () => {
       setIsLoadings(false);
     };
     loadParcels();
-  }, []);
+  }, [render]);
+  console.log(parcels);
 
   const handleDelete = (id) => {
     toast(
@@ -72,7 +74,7 @@ const MyParcel = () => {
                   toast.error("Failed to delete the item. Please try again.");
                 } finally {
                   toast.dismiss(t.id);
-                  refetch();
+                  setRender(!render)
                 }
               }}
             >
@@ -195,7 +197,7 @@ const MyParcel = () => {
                 <TableCell className="font-medium">
                   {parcel.parcelType}
                 </TableCell>
-                <TableCell>{parcel.deliveryDate}</TableCell>
+                <TableCell>{new Date(parcel.deliveryDate).toLocaleDateString()}</TableCell>
                 <TableCell>{parcel.approxDeliveryDate || "N/A"}</TableCell>
                 <TableCell>
                   {new Date(parcel.bookingDate).toLocaleDateString()}

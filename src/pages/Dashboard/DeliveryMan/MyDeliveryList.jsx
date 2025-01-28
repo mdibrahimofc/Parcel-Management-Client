@@ -130,7 +130,6 @@ const MyDeliveryList = () => {
             <TableHead>Approx Delivery Date</TableHead>
             <TableHead>Receiver Phone</TableHead>
             <TableHead>Receiver Adress</TableHead>
-            <TableHead>View Location</TableHead>
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -141,7 +140,7 @@ const MyDeliveryList = () => {
                 <Progress value={50} />
               </TableCell>
             </TableRow>
-          ) : deliveryParcel.length === 0 ? (
+          ) : deliveryParcel?.length === 0 ? (
             <TableRow>
               <TableCell colSpan={7} className="text-center">
                 No parcels found.
@@ -153,11 +152,10 @@ const MyDeliveryList = () => {
                 <TableCell className="font-medium">{parcel.name}</TableCell>
                 <TableCell className="font-medium">{parcel.receiverName}</TableCell>
                 <TableCell>{parcel.number}</TableCell>
-                <TableCell>{parcel.deliveryDate}</TableCell>
+                <TableCell>{new Date(parcel.deliveryDate).toLocaleDateString()}</TableCell>
                 <TableCell>{parcel.approxDeliveryDate}</TableCell>
                 <TableCell>{parcel.receiverPhone}</TableCell>
                 <TableCell>{parcel.address}</TableCell>
-                <TableCell>{"Location"}</TableCell>
                 <TableCell>
                   <div className="flex gap-4 md:gap-6 items-center">
                     <button onClick={() => handleCancel(parcel._id)}

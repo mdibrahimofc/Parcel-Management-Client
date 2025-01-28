@@ -82,7 +82,7 @@ const AllUsers = () => {
               className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
               onClick={async () => {
                 const { data } = await axiosSecure.patch(`/users/${id}`, {
-                  role: "Delivey Man",
+                  role: "Delivery Man",
                 });
                 if(data.modifiedCount){
                   toast.success("User role updated successfull")

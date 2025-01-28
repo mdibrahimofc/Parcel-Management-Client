@@ -54,10 +54,15 @@ const AllParcels = () => {
   const { data: parcels = [], isLoading, refetch } = useQuery({
     queryKey: ["All-Parcel", queryParams],
     queryFn: async () => {
+      console.log(queryParams);
+      queryParams.from = new Date(queryParams.from).getTime()
+      queryParams.to = new Date(queryParams.to).getTime()
       const { from, to } = queryParams;
+      console.log(typeof from, to);
       const { data } = await axiosSecure.get(`/parcel`, {
         params: { from, to },
       });
+      console.log(data);
       return data;
     },
   });
@@ -69,7 +74,7 @@ const AllParcels = () => {
       </h1>
 
       <div className="mb-4">
-        <p>Select Date Range:</p>
+        <p>Select Date Range: Requested Delivery Date</p>
         <div className="flex gap-2 items-center">
           <input
             type="date"
@@ -126,7 +131,7 @@ const AllParcels = () => {
                 <TableCell>
                   {new Date(parcel.bookingDate).toLocaleDateString()}
                 </TableCell>
-                <TableCell>{parcel.deliveryDate}</TableCell>
+                <TableCell>{new Date(parcel.deliveryDate).toLocaleDateString()}</TableCell>
                 <TableCell>{parcel.price || "N/A"}</TableCell>
                 <TableCell>{parcel.status || "pending"}</TableCell>
                 <TableCell>

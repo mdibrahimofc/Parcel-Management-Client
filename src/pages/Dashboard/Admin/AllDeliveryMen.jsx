@@ -54,10 +54,8 @@ const AllDeliveryMen = () => {
               <TableRow key={dMan._id}>
                 <TableCell className="font-medium">{dMan.name}</TableCell>
                 <TableCell>{dMan.number}</TableCell>
-                <TableCell>
-                  {2}
-                </TableCell>
-                <TableCell>{dMan.deliveryDate}</TableCell>
+                <TableCell>{dMan.deliveryCount ? dMan.deliveryCount : 0}</TableCell>
+                <TableCell>{dMan.rating ? Math.ceil(dMan.rating / 5) : 0}</TableCell>
               </TableRow>
             ))
           )}

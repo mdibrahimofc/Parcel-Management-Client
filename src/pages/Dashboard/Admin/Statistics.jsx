@@ -6,7 +6,7 @@ const Statistics = () => {
     series: [
       {
         name: "Bookings",
-        data: [30, 45, 20, 60], // Replace with actual booking data
+        data: [10, 7, 5, 10], // Replace with actual booking data
       },
     ],
     options: {
@@ -34,11 +34,11 @@ const Statistics = () => {
     series: [
       {
         name: "Booked Parcels",
-        data: [30, 45, 20, 60], // Replace with booked parcel data
+        data: [10, 7, 5, 10], // Replace with booked parcel data
       },
       {
         name: "Delivered Parcels",
-        data: [25, 40, 18, 55], // Replace with delivered parcel data
+        data: [7, 45, 15, 9], // Replace with delivered parcel data
       },
     ],
     options: {
@@ -69,7 +69,7 @@ const Statistics = () => {
             options={barChartData.options}
             series={barChartData.series}
             type="bar"
-            height={350}
+            height={300}
           />
         </div>
 
@@ -79,7 +79,7 @@ const Statistics = () => {
             options={lineChartData.options}
             series={lineChartData.series}
             type="line"
-            height={350}
+            height={300}
           />
         </div>
       </div>
