@@ -1,6 +1,6 @@
 # 📦 Parcel Management Website
 
-![Homepage Screenshot](https://i.ibb.co.com/fYkgp9Dg/Screenshot-2025-02-05-160359.png)
+![Homepage Screenshot](https://i.imgur.com/2vG2r9M.png)
 
 ## 🚀 Project Overview
 **Parcel Management** is a modern, role-based system designed to streamline parcel bookings and deliveries. The platform supports three user roles:
